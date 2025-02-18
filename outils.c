@@ -51,7 +51,7 @@ void VerifieTermes(Polynome* polynome)
         }    
 
         ptr = ptr->suivant;
-    }f
+    };
 
 
     ptr = polynome->premier;
