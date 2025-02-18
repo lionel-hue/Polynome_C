@@ -6,10 +6,11 @@
 #define POLYNOME
 
 
-void InitPolynome(Polynome * polynome)
+void InitPolynome(Polynome** polynome)
 {   
-    polynome->premier = NULL;
-    sprintf( polynome->variable, "%c", 'x' ); // variable des termes par defaut est 'X'
+    *polynome = (Polynome *)malloc( sizeof(polynome) );
+    (*polynome)->premier = NULL;
+    sprintf( (*polynome)->variable, "%c", 'x' ); // variable des termes par defaut est 'X'
 }
 
 

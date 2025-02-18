@@ -32,7 +32,7 @@ typedef struct polynome
 
 //Les fonctions utiles :
 
-void InitPolynome(Polynome *); //Nettoyer le polynome(vide)
+void InitPolynome(Polynome **); //Nettoyer le polynome(vide)
 void AjouteTerme(Terme *, Polynome * ); //Toujours au debut de la liste des polynomes
 void VerifieTermes(Polynome *); //E.g 2x6 - 5x6 doit egal a -3x6
 char* CreerPolynome(Polynome *); //recuperer le polynome en chaine de caracteres!

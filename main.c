@@ -17,11 +17,11 @@ int main(void)
         scanf(" %d", &nmbr_termes);
         printf("\n");
 
-        Polynome* polynome = (Polynome *)malloc( sizeof(Polynome *) ); //polynome
+        Polynome* polynome; //polynome
         Terme* terme; //le premier terme
         Terme* ptr; //pointeur sur le premier terme
 
-        InitPolynome(polynome);
+        InitPolynome(&polynome);
         terme = CreerTerme();
         AjouteTerme(terme, polynome);
         ptr = polynome->premier;
