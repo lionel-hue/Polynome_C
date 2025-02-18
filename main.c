@@ -12,7 +12,8 @@ int main(void)
     int nmbr_termes;
     int continuer = 0;
  
-        system("clear");
+        //system("clear");
+        printf("\n\n============\n");
         printf("Bienvenue!,vous voulez creer un polynome avec combien de termes ? : ");
         scanf(" %d", &nmbr_termes);
         printf("\n");
@@ -32,11 +33,11 @@ int main(void)
             ptr->suivant = CreerTerme();
             ptr = ptr->suivant;
         }
-
+        
         RangePolynome(polynome);
         VerifieTermes(polynome); 
         printf("Votre Eqn de base : %s\n", CreerPolynome(polynome) );
-        printf("VOulez-vous continuer? 1 pour oui et 0 pour non ? >>> ");
+        printf("voulez-vous continuer? 1 pour oui et 0 pour non ? >>> ");
         fscanf(stdin, " %d", &continuer);
         ( continuer == 1 )? main():(void)0;
 

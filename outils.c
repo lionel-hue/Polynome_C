@@ -25,20 +25,47 @@ void VerifieTermes(Polynome* polynome)
 {
     Terme *ptr; //indicateur de position
 
+
+    //cette verification serait pour fusionner des termes qui auront des memes valuers des differents etats preccedants e.g 30x0 + 1x45 + 30x1 + 2x4 = 2x4 + 3 
+    ptr = polynome->premier;
+    while( ptr != NULL )
+    {
+        if(ptr->iexpo == 0)
+        {
+            ptr->icoef = 1;
+            ptr->iexpo = 1;
+            sprintf(ptr->ccoef, "%d", ptr->icoef);
+            sprintf(ptr->cexpo, "%d", ptr->iexpo ); 
+        }
+
+        else if(ptr->icoef == 1 )
+        {
+            ptr->iexpo = 1; //ceci et pour fusioner avec un terme avec iexpo 0
+            sprintf(ptr->cexpo, "%d", ptr->iexpo );
+        }
+
+        else if( ptr->icoef  == 0 ) //on va faire malin ici
+        {
+            ptr->iexpo = 1; //quelquesoit l'exposant, il sera ecrase et ajoute aux termes avec expo etant "1" !
+            sprintf(ptr->cexpo, "%d", ptr->iexpo );
+        }    
+
+        ptr = ptr->suivant;
+    }f
+
+
     ptr = polynome->premier;
     while( ptr->suivant != NULL )
     {
-        if( ptr->iexpo == (ptr->suivant)->iexpo ) //Au cas ou on a deux ou plusieurs termes avec meeme expo
+        if( ptr->iexpo == (ptr->suivant)->iexpo ) //Au cas ou on a deux ou plusieurs termes avec meme expo
         {
             ptr->icoef += (ptr->suivant)->icoef; //besoin de fusionner leurs valeurs !
             sprintf(ptr->ccoef, "%d", ptr->icoef);
-            if ( (ptr->suivant)->suivant == NULL ) ptr->suivant = 0; //Verification si c'est le dernier terme!
+            if ( (ptr->suivant)->suivant == NULL ) ptr->suivant = NULL; //Verification si c'est le dernier terme!
             else ptr->suivant = (ptr->suivant)->suivant;   //Suppression du terme rendu inutile
         }
-
         ptr = ptr->suivant;
     }
-
 }
 
 
@@ -80,57 +107,68 @@ char* CreerPolynome(Polynome* polynome)
 
     while( ptr != NULL)  
     {
-        if( strncmp(ptr->ccoef, "0", 1 ) == 0 || strncmp(ptr->ccoef, "-0", 2 ) == 0 );
+        // if( strncmp(ptr->ccoef, "0", 1 ) == 0 || strncmp(ptr->ccoef, "-0", 2 ) == 0 );  /**on n'affiche pas Zero!**/
 
-        else if( strncmp(ptr->ccoef, "1", 1 ) == 0 || ptr->iexpo == 0 )
-        {
-            sprintf( polynomeChaine+i, "%s", "+1" );
-            i++;
-            sprintf(polynomeChaine+i, "%d", 1);
-            i++;
-            sprintf(polynomeChaine+i, "%c", ' ');
-            i++;
-        }
+        // else if( strncmp(ptr->ccoef, "1", 1 ) == 0 || ptr->iexpo == 0 )
+        // {
+        //     sprintf( polynomeChaine+i, "%s", "+1" );
+        //     i+=2;
+        //     sprintf(polynomeChaine+i, "%d", 1);
+        //     i++;
+        //     sprintf(polynomeChaine+i, "%c", ' ');
+        //     i++;
+        // }
 
-        else if( strncmp(ptr->ccoef, "-1", 2 ) == 0 )
-        {
-            sprintf( polynomeChaine+i, "%s", "-1" );
-            i++;
-            sprintf(polynomeChaine+i, "%d", -1);
-            i++;
-            sprintf(polynomeChaine+i, "%c", ' ');
-            i++;
-        }
+        // else if( strncmp(ptr->ccoef, "-1", 2 ) == 0 )
+        // {
+        //     sprintf( polynomeChaine+i, "%s", "-1" );
+        //     i+=2;
+        //     sprintf(polynomeChaine+i, "%d", -1);
+        //     i++;
+        //     sprintf(polynomeChaine+i, "%c", ' ');
+        //     i++;
+        // }
 
-        else if( ptr->iexpo == 1 )
-        {
-            sprintf( polynomeChaine+i, "%c", (ptr->icoef > 0 )? '+' : '-' );
-            i++;
-            sprintf(polynomeChaine+i, "%s", ptr->ccoef);
-            i+= strlen(ptr->ccoef);
-            sprintf(polynomeChaine+i, "%c", ' ');
-            i++;
-        } 
+        // else if( ptr->iexpo == 1 )
+        // {
+        //     sprintf( polynomeChaine+i, "%c", (ptr->icoef > 0 )? '+' : '-' );
+        //     i++;
+        //     sprintf(polynomeChaine+i, "%s", ptr->ccoef);
+        //     //i+= strlen(ptr->ccoef);
+        //     i++;
+        //     sprintf(polynomeChaine+i, "%c", ' ');
+        //     i++;
+        // } 
 
-        else
-        {
-            sprintf( polynomeChaine+i, "%c", (ptr->icoef > 0 )? '+' : '-' );
-            i++;
-            sprintf(polynomeChaine+i, "%s", ptr->ccoef);
-            i+= strlen(ptr->ccoef);
-            sprintf(polynomeChaine+i, "%c", polynome->variable[0] );
-            i++;
-            sprintf(polynomeChaine+i, "%s", ptr->cexpo);
-            i+= strlen(ptr->cexpo);
-            sprintf(polynomeChaine+i, "%c", ' ');
-            i++;
-        }
+        // else
+        // {
+        //     sprintf( polynomeChaine+i, "%c", (ptr->icoef > 0 )? '+' : '-' );
+        //     i++;
+        //     sprintf(polynomeChaine+i, "%s", ptr->ccoef);
+        //     i+= strlen(ptr->ccoef);
+        //     sprintf(polynomeChaine+i, "%c", polynome->variable[0] );
+        //     i++;
+        //     sprintf(polynomeChaine+i, "%s", ptr->cexpo);
+        //     i+= strlen(ptr->cexpo);
+        //     sprintf(polynomeChaine+i, "%c", ' ');
+        //     i++;
+        // }
 
+        sprintf( polynomeChaine+i, "%c", (ptr->icoef > 0 )? '+' : '-' );
+        i++;
+        sprintf(polynomeChaine+i, "%s", ptr->ccoef);
+        i+= strlen(ptr->ccoef);
+        sprintf(polynomeChaine+i, "%c", polynome->variable[0] );
+        i++;
+        sprintf(polynomeChaine+i, "%s", ptr->cexpo);
+        i+= strlen(ptr->cexpo);
+        sprintf(polynomeChaine+i, "%c", ' ');
+        i++;
 
         ptr = ptr->suivant;
     }
  
-    return polynomeChaine + 1; // plus 1 pour le jettage de l'operatuer du premier termw
+    return polynomeChaine + 1; // plus 1 pour le jettage de l'operatuer du premier terme
 }
 
 
