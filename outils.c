@@ -8,7 +8,7 @@
 
 void InitPolynome(Polynome** polynome)
 {   
-    *polynome = (Polynome *)malloc( sizeof(polynome) );
+    *polynome = (Polynome *)malloc( sizeof(Polynome) );
     (*polynome)->premier = NULL;
     sprintf( (*polynome)->variable, "%c", 'x' ); // variable des termes par defaut est 'X'
 }
