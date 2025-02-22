@@ -60,8 +60,12 @@ void VerifieTermes(Polynome* polynome)
         if( ptr->iexpo == (ptr->suivant)->iexpo ) //Au cas ou on a deux ou plusieurs termes avec meme expo
         {
             ptr->icoef += (ptr->suivant)->icoef; //besoin de fusionner leurs valeurs !
-            sprintf(ptr->ccoef, "%d", ptr->icoef);
-            if ( (ptr->suivant)->suivant == NULL ) ptr->suivant = NULL; //Verification si c'est le dernier terme!
+            sprintf(ptr->ccoef, "%d", ptr->icoef); //ok
+            
+            if(ptr == 1);
+            
+            else if ( (ptr->suivant)->suivant == NULL ) ptr->suivant = 0; //Verification si c'est le dernier terme!
+
             else ptr->suivant = (ptr->suivant)->suivant;   //Suppression du terme rendu inutile
         }
         ptr = ptr->suivant;

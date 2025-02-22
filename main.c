@@ -34,8 +34,10 @@ int main(void)
             ptr = ptr->suivant;
         }
         
+        //RangePolynome(polynome);
         RangePolynome(polynome);
         VerifieTermes(polynome); 
+        //VerifieTermes(polynome);
         printf("Votre Eqn de base : %s\n", CreerPolynome(polynome) );
         printf("voulez-vous continuer? 1 pour oui et 0 pour non ? >>> ");
         fscanf(stdin, " %d", &continuer);
