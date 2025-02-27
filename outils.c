@@ -10,14 +10,25 @@ void InitPolynome(Polynome** polynome)
 {   
     *polynome = (Polynome *)malloc( sizeof(Polynome) );
     (*polynome)->premier = NULL;
-    sprintf( (*polynome)->variable, "%c", 'x' ); // variable des termes par defaut est 'X'
+    (*polynome)->suivant = NULL;
 }
 
 
 void AjouteTerme(Terme* terme, Polynome* polynome)
 {
-    terme->suivant = polynome->premier;
-    polynome->premier = terme;
+    if(polynome->premier == NULL )
+    {
+        polynome->premier = terme; 
+    }
+    else
+    {
+        Terme* ptr = polynome->premier;
+        while( ptr->suivant != NULL )
+        {
+            ptr = ptr->suivant;
+        }
+        ptr->suivant = terme;
+    }
 }
 
  
@@ -55,18 +66,16 @@ void VerifieTermes(Polynome* polynome)
 
 
     ptr = polynome->premier;
-    while( ptr->suivant != NULL )
+    while( ptr != NULL && ptr->suivant != NULL )
     {
         if( ptr->iexpo == (ptr->suivant)->iexpo ) //Au cas ou on a deux ou plusieurs termes avec meme expo
         {
             ptr->icoef += (ptr->suivant)->icoef; //besoin de fusionner leurs valeurs !
             sprintf(ptr->ccoef, "%d", ptr->icoef); //ok
             
-            if(ptr == 1);
-            
-            else if ( (ptr->suivant)->suivant == NULL ) ptr->suivant = 0; //Verification si c'est le dernier terme!
-
-            else ptr->suivant = (ptr->suivant)->suivant;   //Suppression du terme rendu inutile
+            Terme* temp = ptr->suivant;
+            ptr->suivant = ptr->suivant->suivant;
+            free(temp);
         }
         ptr = ptr->suivant;
     }
@@ -76,6 +85,7 @@ void VerifieTermes(Polynome* polynome)
 Terme* CreerTerme(void)
 {
     Terme* terme = (Terme *)malloc( sizeof(Terme) );
+    terme->suivant = NULL;
 
     printf("Entrer la valeur du coefficient du terme : ");
     scanf(" %d", &terme->icoef);
@@ -85,7 +95,6 @@ Terme* CreerTerme(void)
     scanf(" %d", &terme->iexpo);
     sprintf(terme->cexpo, "%d", terme->iexpo);
 
-    (terme->iexpo == 0 )? sprintf(terme->nature, "%s", CONST ): sprintf(terme->nature, "%s", VAR); 
     printf("\n");
     return terme;
 }
@@ -111,59 +120,10 @@ char* CreerPolynome(Polynome* polynome)
 
     while( ptr != NULL)  
     {
-        // if( strncmp(ptr->ccoef, "0", 1 ) == 0 || strncmp(ptr->ccoef, "-0", 2 ) == 0 );  /**on n'affiche pas Zero!**/
-
-        // else if( strncmp(ptr->ccoef, "1", 1 ) == 0 || ptr->iexpo == 0 )
-        // {
-        //     sprintf( polynomeChaine+i, "%s", "+1" );
-        //     i+=2;
-        //     sprintf(polynomeChaine+i, "%d", 1);
-        //     i++;
-        //     sprintf(polynomeChaine+i, "%c", ' ');
-        //     i++;
-        // }
-
-        // else if( strncmp(ptr->ccoef, "-1", 2 ) == 0 )
-        // {
-        //     sprintf( polynomeChaine+i, "%s", "-1" );
-        //     i+=2;
-        //     sprintf(polynomeChaine+i, "%d", -1);
-        //     i++;
-        //     sprintf(polynomeChaine+i, "%c", ' ');
-        //     i++;
-        // }
-
-        // else if( ptr->iexpo == 1 )
-        // {
-        //     sprintf( polynomeChaine+i, "%c", (ptr->icoef > 0 )? '+' : '-' );
-        //     i++;
-        //     sprintf(polynomeChaine+i, "%s", ptr->ccoef);
-        //     //i+= strlen(ptr->ccoef);
-        //     i++;
-        //     sprintf(polynomeChaine+i, "%c", ' ');
-        //     i++;
-        // } 
-
-        // else
-        // {
-        //     sprintf( polynomeChaine+i, "%c", (ptr->icoef > 0 )? '+' : '-' );
-        //     i++;
-        //     sprintf(polynomeChaine+i, "%s", ptr->ccoef);
-        //     i+= strlen(ptr->ccoef);
-        //     sprintf(polynomeChaine+i, "%c", polynome->variable[0] );
-        //     i++;
-        //     sprintf(polynomeChaine+i, "%s", ptr->cexpo);
-        //     i+= strlen(ptr->cexpo);
-        //     sprintf(polynomeChaine+i, "%c", ' ');
-        //     i++;
-        // }
-
-        sprintf( polynomeChaine+i, "%c", (ptr->icoef > 0 )? '+' : '-' );
+        sprintf( polynomeChaine+i, "%c", (ptr->icoef >= 0 )? '+' : '-' );
         i++;
         sprintf(polynomeChaine+i, "%s", ptr->ccoef);
         i+= strlen(ptr->ccoef);
-        sprintf(polynomeChaine+i, "%c", polynome->variable[0] );
-        i++;
         sprintf(polynomeChaine+i, "%s", ptr->cexpo);
         i+= strlen(ptr->cexpo);
         sprintf(polynomeChaine+i, "%c", ' ');
@@ -180,7 +140,6 @@ void RangePolynome(Polynome* polynome)
 {
     //  tri par selection(Ordre decroissante )
     Terme *i, *j, *iMax, *temp; //les indicateurs a utiliser...
-    temp = (Terme *)malloc(sizeof(Terme) );
  
     i = polynome->premier;
     while( i->suivant != NULL )
@@ -196,26 +155,69 @@ void RangePolynome(Polynome* polynome)
 
         if( iMax != i )
         { 
-            StrcpyTerme(temp,i);  
-            StrcpyTerme(i,iMax);
-            StrcpyTerme(iMax,temp);
+            temp = i;  
+            i = iMax;
+            iMax = temp;
         }
         i = i->suivant;
     }
 }
 
-
-void StrcpyTerme(Terme* dest, Terme* src)
+int NmbrTermes(Polynome* polynome)
 {
-    memset(dest->ccoef,'\0', sizeof dest->ccoef );
-    sprintf(dest->ccoef,"%s",src->ccoef);
+    Terme* ptr = polynome->premier;
+    int compteur = 0;
 
-    dest->icoef = src->icoef;
+    while(ptr != NULL )
+    {
+        compteur++;
+        ptr = ptr -> suivant;
+    }
+    return compteur;
+}
 
-    memset(dest->cexpo,'\0', sizeof dest->cexpo );
-    sprintf(dest->cexpo,"%s",src->cexpo);
-    dest->iexpo = src->iexpo;
 
-    memset(dest->nature,'\0', sizeof dest->nature );
-    sprintf(dest->nature,"%s",src->nature);
+
+void InitListePolynomes( ListePolynomes** liste )
+{
+    *liste = (ListePolynomes *)malloc(sizeof(ListePolynomes)) ;
+    (*liste)->premier= NULL;
+}
+
+void AjoutePolynome (Polynome* polynome, ListePolynomes* liste )
+{
+    if(liste->premier == NULL )
+    {
+        liste->premier = polynome; 
+    }
+    else
+    {
+        Polynome* ptr = liste->premier;
+        while( ptr->suivant != NULL )
+        {
+            ptr = ptr->suivant;
+        }
+        ptr->suivant = polynome;
+    }
+}
+
+void AfficherListePolynomes(ListePolynomes* liste)
+{
+    Polynome* ptr = liste->premier;
+    int i = 0;
+
+
+    if (liste == NULL || liste->premier == NULL)
+    {
+        printf("\nLa liste de polynomes est vide.\n");
+        return;
+    }
+
+
+    while( ptr != NULL )
+    {
+        printf("\nPolynome numero %d : %s",i+1, CreerPolynome(ptr) );
+        i++;
+        ptr = ptr->suivant;   
+    }
 }
