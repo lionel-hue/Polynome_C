@@ -120,15 +120,35 @@ char* CreerPolynome(Polynome* polynome)
 
     while( ptr != NULL)  
     {
-        sprintf( polynomeChaine+i, "%c", (ptr->icoef >= 0 )? '+' : '-' );
-        i++;
-        sprintf(polynomeChaine+i, "%s", ptr->ccoef);
-        i+= strlen(ptr->ccoef);
-        sprintf(polynomeChaine+i, "%s", ptr->cexpo);
-        i+= strlen(ptr->cexpo);
-        sprintf(polynomeChaine+i, "%c", ' ');
-        i++;
+        switch( ptr->iexpo ) //cas ou l'exposant est soit 0 ou 1 !
+        {
+            case 0 :
+            case 1 :
 
+            sprintf( polynomeChaine+i, "%c", (ptr->icoef >= 0 )? '+' : '-' );
+            i++;
+            sprintf(polynomeChaine+i, "%s", ptr->ccoef);
+            i+= strlen(ptr->ccoef);
+            sprintf(polynomeChaine+i, "%c", ' ');
+            i++;
+
+            break;
+
+            default : //cas ou l'exposant > 1l
+
+            sprintf( polynomeChaine+i, "%c", (ptr->icoef >= 0 )? '+' : '-' );
+            i++;
+            sprintf(polynomeChaine+i, "%s", ptr->ccoef);
+            i+= strlen(ptr->ccoef);
+            sprintf(polynomeChaine+i, "%c", 'x');
+            i++;
+            sprintf(polynomeChaine+i, "%s", ptr->cexpo);
+            i+= strlen(ptr->cexpo);
+            sprintf(polynomeChaine+i, "%c", ' ');
+            i++;
+
+            break;
+        }
         ptr = ptr->suivant;
     }
  

@@ -13,7 +13,7 @@ void menu(int* choix, ListePolynomes** liste)
         printf("\n3 Ajouter un terme a un polynome");
         printf("\n4 Supprimer un terme d'un polynome");
         printf("\n5 A propos");
-        printf("\n6 Quiitter");
+        printf("\n6 Quitter");
 
         printf("\nMon choix : ");
         scanf(" %d", choix);
@@ -34,6 +34,7 @@ void menu(int* choix, ListePolynomes** liste)
 
             printf("\nVoulez-vous continuer ? 1 pour oui et 0 pour non : ");
             scanf(" %d", &continuer);
+            printf("\n\n");
 
             while( continuer == 1 )
             {
@@ -41,8 +42,18 @@ void menu(int* choix, ListePolynomes** liste)
                 ptr = ptr->suivant;
                 printf("\nVoulez-vous continuer ? 1 pour oui et 0 pour non : ");
                 scanf(" %d", &continuer);
+                printf("\n\n");
+            }
+
+            //A ce point... on parcourt le polynome en rangeant et verifiant les termes 
+            for(int i = 0; i < NmbrTermes(polynome); i++ )
+            {
+                VerifieTermes(polynome);
+                RangePolynome(polynome);
+                VerifieTermes(polynome);
             }
             
+            //okay !
             AjoutePolynome(polynome, *liste);
             menu(choix, liste);
             break;
