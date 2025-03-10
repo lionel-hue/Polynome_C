@@ -1,1 +1,0 @@
-#L'Editeur des Polynome !
